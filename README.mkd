@@ -1,0 +1,32 @@
+Catalyst::Helper::View::TTSilex
+===============================
+
+INSTALL
+-------
+
+    $ git clone git://github.com/aanoaa/Catalyst-Helper-View-TTSilex.git
+    $ cd Catalyst-Helper-View-TTSilex/
+    $ dzil build
+    $ cd Catalyst-Helper-View-TTSilex-VERSION/
+    $ perl Makefile.PL
+    $ make && make install
+
+Usage
+-----
+
+    $ dzil new -p catalyst Foo::Web
+    $ cd Foo-Web/
+    $ script/foo_web_create.pl view Default TTSilex
+    ## Edit foo_web.conf
+    $ echo "Default index.tt" > root/templates/default/src/index.tt
+    ## Edit Foo::Web::Controller::Root::index's welcome_message
+    $ script/foo_web_test.pl /
+
+`lib/Foo/Web/Controller/Root.pm`
+
+    sub index :Path :Args(0) {
+        my ( $self, $c ) = @_; 
+
+        # Hello World
+        # $c->response->body( $c->welcome_message );
+    }
