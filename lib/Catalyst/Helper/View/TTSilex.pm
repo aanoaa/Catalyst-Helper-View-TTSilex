@@ -62,12 +62,15 @@ sub mk_templates {
     my $template_conf = File::Spec->catfile( $dist_dir, 'myapp.conf' );
     my $conf = Catalyst::Utils::appprefix($helper->{app}) . '.conf.new';
     my $content = slurp $template_conf;
-    my $vars = { name => lc $helper->{name} };
+    my $vars = {
+        lower_name => lc $helper->{name},
+        name => $helper->{name}
+    };
     $helper->render_file_contents($content, $conf, $vars);
-    print "please add below lines to your app conf\n";
-    print "=======================================\n";
+    print "** please add below lines to your app conf\n";
+    print "# ==========================================\n";
     print slurp $conf;
-    print "=======================================\n";
+    print "# ==========================================\n";
 }
 
 =head1 SEE ALSO
