@@ -56,7 +56,6 @@ sub mk_templates {
     my $orig_dir = File::Spec->catfile( $dist_dir, 'root', 'templates', 'default' );
     my $template_dir = File::Spec->catfile( $base, 'root', 'templates' );
     my $target_dir = File::Spec->catfile( $base, 'root', 'templates', lc $helper->{name} );
-    $helper->mk_dir(lc $template_dir);
     dircopy($orig_dir, $target_dir) or die $!;
 
     my $template_conf = File::Spec->catfile( $dist_dir, 'myapp.conf' );
@@ -66,11 +65,8 @@ sub mk_templates {
         lower_name => lc $helper->{name},
         name => $helper->{name}
     };
+
     $helper->render_file_contents($content, $conf, $vars);
-    print "** please add below lines to your app conf\n";
-    print "# ==========================================\n";
-    print slurp $conf;
-    print "# ==========================================\n";
 }
 
 =head1 SEE ALSO
