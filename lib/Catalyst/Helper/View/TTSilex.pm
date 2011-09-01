@@ -6,6 +6,7 @@ use File::Spec;
 use File::Copy::Recursive qw(dircopy);
 use File::ShareDir qw/dist_dir/;
 use File::Slurp qw/slurp/;
+use File::Find;
 
 =head1 SYNOPSIS
 
@@ -57,6 +58,17 @@ sub mk_templates {
     my $template_dir = File::Spec->catfile( $base, 'root', 'templates' );
     my $target_dir = File::Spec->catfile( $base, 'root', 'templates', lc $helper->{name} );
     dircopy($orig_dir, $target_dir) or die $!;
+
+    my @files;
+    find({ wanted => sub {
+        return if /^\.$/;
+        open my $fh, '<', $_;
+        return if -d $fh;
+        push @files, File::Spec->rel2abs($_);
+    } }, $target_dir);
+
+    my $mode = 0644;
+    chmod $mode, @files;
 
     my $template_conf = File::Spec->catfile( $dist_dir, 'myapp.conf' );
     my $conf = Catalyst::Utils::appprefix($helper->{app}) . '.conf.new';
