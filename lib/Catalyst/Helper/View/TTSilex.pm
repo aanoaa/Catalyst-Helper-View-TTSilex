@@ -3,6 +3,7 @@ package Catalyst::Helper::View::TTSilex;
 
 use strict;
 use File::Spec;
+use File::Copy;
 use File::Copy::Recursive qw(dircopy);
 use File::ShareDir qw/dist_dir/;
 use File::Slurp qw/slurp/;
@@ -30,6 +31,7 @@ sub mk_compclass {
     my $file = $helper->{file};
     $helper->render_file( 'compclass', $file );
     $self->mk_templates( $helper, @args );
+    $self->mk_static( $helper, @args );
 }
 
 =head2 mk_comptest
@@ -79,6 +81,35 @@ sub mk_templates {
     };
 
     $helper->render_file_contents($content, $conf, $vars);
+}
+
+=head2 mk_static
+
+Copy files that required for require.js, coffeescript and sass
+
+=cut
+
+sub mk_static {
+    my ( $self, $helper ) = @_;
+    my $base = $helper->{base};
+    my $dist_dir = dist_dir('Catalyst-Helper-View-TTSilex');
+    my $orig_dir = File::Spec->catfile( $dist_dir, 'root', 'static' );
+    my $target_dir = File::Spec->catfile( $base, 'root', 'static' );
+    dircopy($orig_dir, $target_dir) or die $!;
+    my $config_rb = File::Spec->catfile( $base, 'root', 'config.rb' );
+    copy(File::Spec->catfile( $dist_dir, 'root', 'config.rb' ), $config_rb) or die $!;
+    chmod 0644, $config_rb;
+
+    my @files;
+    find({ wanted => sub {
+        return if /^\.$/;
+        open my $fh, '<', $_;
+        return if -d $fh;
+        push @files, File::Spec->rel2abs($_);
+    } }, $target_dir);
+
+    my $mode = 0644;
+    chmod $mode, @files;
 }
 
 =head1 SEE ALSO
