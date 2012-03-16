@@ -1,11 +1,11 @@
-<div class="container">
-  <header>
-    [% PROCESS site/header %]
-  </header>
-  <div id="content">
-    [% content %]
-  </div>
-  <footer>
-    [% PROCESS site/footer %]
-  </footer>
-</div> 
+<header>
+  [% PROCESS site/header %]
+</header>
+
+<div id="content" class="container">
+  [% content %]
+</div>
+
+<footer class="well">
+  [% PROCESS site/footer %]
+</footer>
